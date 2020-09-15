@@ -196,3 +196,12 @@ dse[1:3] %>%
 #> 6 fghctr01_dec07_2012.sas7bdat /LSC/NES/study/CARDIA/core datasets/Y25/DATA
 #> 7 fghctr01_dec07_2012.sas7bdat /LSC/NES/study/CARDIA/core datasets/Y25/DATA
 ```
+
+Please check the help document for each function to see how to use them.
+
+``` r
+?flat2file
+?dic_value_extract_one_dataset_path
+?dic_value_extract_one_dataset
+?dic_value_extract_one_var
+```
