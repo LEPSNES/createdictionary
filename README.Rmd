@@ -18,7 +18,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of createdictionary is to ...
+```{r}
+# output: github_document
+#   always_allow_html: true
+```
+
+
+This package of createdictionary was developed at the Neuroepidemiology Section (NES) of Laboratory of Epidemiology & Population Science (LEPS), NIA. The goal is to build a one-document dictionary from multiple datasets; the key values are extracted for each variable.  
 
 ## Installation
 
@@ -28,27 +34,57 @@ You can install the released version of createdictionary from [CRAN](https://CRA
 install.packages("createdictionary")
 ```
 
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("LEPSNES/createdictionary")
+```
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+```{r load libaries, include=FALSE}
 library(createdictionary)
-## basic example code
+library(haven)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
+```{r example1}
+## get folder path
+df <- system.file(package = "haven")
+## search all the files under the folder for sas dataset
+dse <- flat2file(df, "*.sas7bdat")
+## dic_value_extract_one_dataset_path uses file path as input
+dse %>%
+  dic_value_extract_one_dataset_path()
+
+## dic_value_extract_one_dataset uses a data frame as input
+dse[1] %>% 
+  read_sas() %>% 
+  dic_value_extract_one_dataset()
+
+## dic_value_extract_one_var process a variable each time
+dse %>% 
+  read_sas() %>% 
+  imap_dfr( ~ dic_value_extract_one_var(.x, .y))
+
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
 
-You can also embed plots, for example:
+```{r example2}
+df <- "/LSC/NES/study/CARDIA/core datasets/Y25/DATA"
+dse <- flat2file(df, "*.sas7bdat")
+dse[3] %>%
+  dic_value_extract_one_dataset_path()
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+dse[1:3] %>%
+  map_dfr(dic_value_extract_one_dataset_path) %>% 
+  slice_head(n=7)
+
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+
+
+
+
