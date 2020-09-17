@@ -20,7 +20,13 @@ generate key values for one variable
 \examples{
 require(haven)
 # mtcars.sas7bdat was generated from R mtcars dataset
+# get file path
 df <- system.file("extdata", "mtcars.sas7bdat", package = "createdictionary")
+# read in data
+d <- read_sas(df)
+# one variable
+dic_value_extract_one_var(d$mpg, "mpg")
+# process the whole dataset
 df \%>\%
 read_sas() \%>\%
   imap_dfr( ~ dic_value_extract_one_var(.x, .y))
@@ -30,6 +36,8 @@ dse <- flat2file(df, "*.sas7bdat")
 dse[1] \%>\%
   read_sas() \%>\%
   imap_dfr( ~ dic_value_extract_one_var(.x, .y))
+
+
 
 }
 \keyword{internal}

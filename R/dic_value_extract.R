@@ -38,7 +38,8 @@ dic_value_extract_one_dataset_path <- function(dataset_path) {
   # extract the values
   value_extracted <-
     d %>%
-    purrr::imap_dfr(~ dic_value_extract_one_var(.x, .y))
+    # purrr::imap_dfr(~ dic_value_extract_one_var(.x, .y))
+    purrr::imap_dfr(~ dic_value_extract_one_var_safely(.x, .y)$result)
   # add file name and dir name
   value_extracted$file_name <- basename(dataset_path)
   value_extracted$dir_name <- dirname(dataset_path)
@@ -80,7 +81,8 @@ dic_value_extract_one_dataset_path <- function(dataset_path) {
 #'
 dic_value_extract_one_dataset <- function(.data) {
   .data %>%
-    purrr::imap_dfr(~ dic_value_extract_one_var(.x, .y))
+    # purrr::imap_dfr(~ dic_value_extract_one_var(.x, .y))
+    purrr::imap_dfr(~ dic_value_extract_one_var_safely(.x, .y)$result)
 
 }
 
@@ -101,7 +103,13 @@ dic_value_extract_one_dataset <- function(.data) {
 #' @examples
 #' require(haven)
 #' # mtcars.sas7bdat was generated from R mtcars dataset
+#' # get file path
 #' df <- system.file("extdata", "mtcars.sas7bdat", package = "createdictionary")
+#' # read in data
+#' d <- read_sas(df)
+#' # one variable
+#' dic_value_extract_one_var(d$mpg, "mpg")
+#' # process the whole dataset
 #' df %>%
 #' read_sas() %>%
 #'   imap_dfr( ~ dic_value_extract_one_var(.x, .y))
@@ -111,6 +119,8 @@ dic_value_extract_one_dataset <- function(.data) {
 #' dse[1] %>%
 #'   read_sas() %>%
 #'   imap_dfr( ~ dic_value_extract_one_var(.x, .y))
+#'
+#'
 #'
 dic_value_extract_one_var <- function(x, var_name) {
   # label = get_label(x)
@@ -150,5 +160,37 @@ dic_value_extract_one_var <- function(x, var_name) {
   )
 }
 
+
+# the safe version of extract values from one variable
+# require(haven)
+# # mtcars.sas7bdat was generated from R mtcars dataset
+# # get file path
+# df <- system.file("extdata", "mtcars.sas7bdat", package = "createdictionary")
+# # read in data
+# d <- read_sas(df)
+# # one variable
+# dic_value_extract_one_var_safetly(d$mpg, "mpg")
+# dic_value_extract_one_var_safetly(d$mpg, "mpg")$result
+
+dic_value_extract_one_var_safely <- safely(
+    dic_value_extract_one_var,
+    otherwise =   data.frame(
+      var_name = NA,
+      label = NA,
+      value_distinct = NA,
+      max = NA,
+      min = NA,
+      mean = NA,
+      top1_value = NA,
+      top1_freq = NA,
+      top2_value = NA,
+      top2_freq = NA,
+      top3_value = NA,
+      top3_freq = NA
+    )
+  )
+
+# dic_value_extract_one_var_safely <- safely(dic_value_extract_one_var,
+#                                            otherwise =   NA)
 
 

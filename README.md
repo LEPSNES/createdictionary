@@ -107,6 +107,8 @@ dse %>%
 
 ``` r
 df <- "/LSC/NES/study/CARDIA/core datasets/Y25/DATA"
+## on windows, use this
+## df <- "T:/LEPS/NES/study/CARDIA/core datasets/Y25/DATA"
 dse <- flat2file(df, "*.sas7bdat")
 dse[3] %>%
   dic_value_extract_one_dataset_path()
