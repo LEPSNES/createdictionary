@@ -208,9 +208,18 @@ Please check the help document for each function to see how to use them.
 ?dic_value_extract_one_var
 ```
 
-furture direction. 1. other dataset types exept sas \* SPSS \* Stata \*
-CSV \* database table 1. handle possible file opening errors 1. handle
-possible value extraction errors
+furture direction.
+
+1.  other dataset types exept sas
+    
+      - SPSS
+      - Stata
+      - CSV
+      - database table
+
+2.  handle possible file opening errors
+
+3.  handle possible value extraction errors
 
 Hope this tool can be of somewhat help with your research.
 
