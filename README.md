@@ -208,9 +208,9 @@ Please check the help document for each function to see how to use them.
 ?dic_value_extract_one_var
 ```
 
-furture direction.
+future direction.
 
-1.  other dataset types exept sas
+1.  other dataset types except sas7bdat
     
       - SPSS
       - Stata

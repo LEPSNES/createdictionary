@@ -4,12 +4,14 @@
 \alias{flat2file}
 \title{Concatenate all the files inside or outside directories}
 \usage{
-flat2file(df, pattern)
+flat2file(df, in_pattern, ex_pattern = NULL)
 }
 \arguments{
 \item{df}{character vector or list of files or directories in full path}
 
-\item{pattern}{file selection pattern}
+\item{in_pattern}{file selection pattern}
+
+\item{ex_pattern}{file exclusion pattern}
 }
 \value{
 character vector including full path only for files
@@ -23,6 +25,6 @@ df <- c("/opt/R/4.0.2/lib/R/library/base/Meta/Rd.rds", system.file(package = "re
 flat2file(df, "*.rds")
 df <- "/LSC/NES/study/CARDIA/core datasets/Y25/DATA"
 flat2file(df, "*.sas7bdat")
-
+flat2file(df, in_pattern = "*.sas7bdat", ex_pattern = "h3chem.sas7bdat")
 
 }
