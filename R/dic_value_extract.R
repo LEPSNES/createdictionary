@@ -2,6 +2,11 @@
 
 #' extract information from one single dataset provided as file path
 #'
+#' This function can now handle the read_sas error by employing the purrr::safely
+#' strategy, which would lead to one row output of all NA's except filename and
+#' dirname. Moreover, the total row number of each dataset is also provided as
+#' total_row.
+#'
 #' @param dataset_path the full path to the dataset from which key values
 #'   will be extracted
 #'
@@ -33,13 +38,40 @@
 
 #'
 dic_value_extract_one_dataset_path <- function(dataset_path) {
+
   # read in data
-  d <- haven::read_sas(dataset_path)
+  # d <- haven::read_sas(dataset_path)
+  d <- safe_read_sas(dataset_path)$result
   # extract the values
-  value_extracted <-
-    d %>%
-    # purrr::imap_dfr(~ dic_value_extract_one_var(.x, .y))
-    purrr::imap_dfr(~ dic_value_extract_one_var_safely(.x, .y)$result)
+  if (!is.null(d)) {
+    value_extracted <-
+      purrr::imap_dfr(d, ~ dic_value_extract_one_var_safely(.x, .y)$result)
+    value_extracted$total_row <- nrow(d)
+  } else {
+    value_extracted <-
+      data.frame(
+        var_name = NA,
+        label = NA,
+        value_distinct = NA,
+        max = NA,
+        min = NA,
+        mean = NA,
+        top1_value = NA,
+        top1_freq = NA,
+        top2_value = NA,
+        top2_freq = NA,
+        top3_value = NA,
+        top3_freq = NA,
+        total_row = NA
+      )
+  }
+
+  #
+  #   # add total row number of the dataset
+  #     ifelse (!is.null(d),
+  #             nrow(d),
+  #             NA)
+
   # add file name and dir name
   value_extracted$file_name <- basename(dataset_path)
   value_extracted$dir_name <- dirname(dataset_path)
@@ -161,16 +193,16 @@ dic_value_extract_one_var <- function(x, var_name) {
 }
 
 
-# the safe version of extract values from one variable
-# require(haven)
-# # mtcars.sas7bdat was generated from R mtcars dataset
-# # get file path
-# df <- system.file("extdata", "mtcars.sas7bdat", package = "createdictionary")
-# # read in data
-# d <- read_sas(df)
-# # one variable
-# dic_value_extract_one_var_safetly(d$mpg, "mpg")
-# dic_value_extract_one_var_safetly(d$mpg, "mpg")$result
+#' the safe version of extract values from one variable
+#' require(haven)
+#' # mtcars.sas7bdat was generated from R mtcars dataset
+#' # get file path
+#' df <- system.file("extdata", "mtcars.sas7bdat", package = "createdictionary")
+#' # read in data
+#' d <- read_sas(df)
+#' # one variable
+#' dic_value_extract_one_var_safetly(d$mpg, "mpg")
+#' dic_value_extract_one_var_safetly(d$mpg, "mpg")$result
 
 dic_value_extract_one_var_safely <- safely(
     dic_value_extract_one_var,
@@ -190,7 +222,9 @@ dic_value_extract_one_var_safely <- safely(
     )
   )
 
-# dic_value_extract_one_var_safely <- safely(dic_value_extract_one_var,
-#                                            otherwise =   NA)
+
+#' # the safe version of read_sas
+
+safe_read_sas <- purrr::safely(haven::read_sas, , otherwise = NULL)
 
 

@@ -14,7 +14,10 @@ will be extracted}
 a dataframe including the values extracted from each variable in the dataset
 }
 \description{
-extract information from one single dataset provided as file path
+This function can now handle the read_sas error by employing the purrr::safely
+strategy, which would lead to one row output of all NA's except filename and
+dirname. Moreover, the total row number of each dataset is also provided as
+total_row.
 }
 \examples{
 
