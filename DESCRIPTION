@@ -3,8 +3,9 @@ Type: Package
 Title: Create One-document Dictionary
 Version: 0.0.0.9000
 Authors@R: c(
-    person("David", "Li", email = "zhiguang.li@nih.gov", role = c("cre", "aut")),
+    person("David", "Li", email = "zhiguang.li@nih.gov", role = "aut"),
     person("Lenore", "Launer", email = "LaunerL@nia.nih.gov", role = "aut"))
+Maintainer: David Li <zhiguang.li@nih.gov>
 Description: create an one-document dictionary from multiple datasets. The dictionary
     should includes variable name, label, top values, top value frequencies, and others
 License: GPL-3
@@ -20,3 +21,6 @@ Imports:
     sjlabelled,
     dplyr,
     purrr
+URL: https://github.com/LEPSNES/createdictionary/
+BugReports: https://github.com/LEPSNES/createdictionary/issues
+
