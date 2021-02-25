@@ -38,9 +38,7 @@
 
 #'
 dic_value_extract_one_dataset_path <- function(dataset_path) {
-
   # read in data
-  # d <- haven::read_sas(dataset_path)
   d <- safe_read_sas(dataset_path)$result
   # extract the values
   if (!is.null(d)) {
@@ -49,19 +47,25 @@ dic_value_extract_one_dataset_path <- function(dataset_path) {
     value_extracted$total_row <- nrow(d)
   } else {
     value_extracted <-
-      data.frame(
+      tibble(
         var_name = NA,
         label = NA,
         value_distinct = NA,
-        max = NA,
-        min = NA,
         mean = NA,
+        sd = NA,
+        largest_1 = NA,
+        largest_2 = NA,
+        largest_3 = NA,
+        smallest_1 = NA,
+        smallest_2 = NA,
+        smallest_3 = NA,
         top1_value = NA,
         top1_freq = NA,
         top2_value = NA,
         top2_freq = NA,
         top3_value = NA,
         top3_freq = NA,
+        num_NA = NA,
         total_row = NA
       )
   }
@@ -153,47 +157,6 @@ dic_value_extract_one_dataset <- function(.data) {
 #'   imap_dfr( ~ dic_value_extract_one_var(.x, .y))
 #'
 #'
-#'
-# Comment out the function Feb 24, 2021
-# dic_value_extract_one_var <- function(x, var_name) {
-#   # label = get_label(x)
-#   label = ifelse(is.null(sjlabelled::get_label(x)), NA, sjlabelled::get_label(x))
-#   value_distinct = as.character(dplyr::n_distinct(x))
-#   max = as.character(max(x, na.rm = T))
-#   min = as.character(min(x, na.rm = T))
-#   mean = as.character(mean(x, na.rm = T))
-#   if (length(table(x)) > 0) {
-#     top1_value = names(sort(table(x), decreasing = T)[1])
-#     top1_freq = as.character(sort(table(x), decreasing = T)[1])
-#     top2_value = names(sort(table(x), decreasing = T)[2])
-#     top2_freq = as.character(sort(table(x), decreasing = T)[2])
-#     top3_value = names(sort(table(x), decreasing = T)[3])
-#     top3_freq = as.character(sort(table(x), decreasing = T)[3])
-#   } else {
-#     top1_value = NA
-#     top1_freq = NA
-#     top2_value = NA
-#     top2_freq = NA
-#     top3_value = NA
-#     top3_freq = NA
-#   }
-#   data.frame(
-#     var_name,
-#     label,
-#     value_distinct,
-#     max,
-#     min,
-#     mean,
-#     top1_value,
-#     top1_freq,
-#     top2_value,
-#     top2_freq,
-#     top3_value,
-#     top3_freq
-#   )
-# }
-
-
 dic_value_extract_one_var <- function(x, var_name) {
   # sort decreasingly by frequency
   frq <- sort(table(x), decreasing = T)
@@ -206,11 +169,7 @@ dic_value_extract_one_var <- function(x, var_name) {
       NA,
       sjlabelled::get_label(x)
     ),
-    # value_distinct = as.character(dplyr::n_distinct(x)),
     value_distinct = dplyr::n_distinct(x),
-    # max = as.character(max(x, na.rm = T)),
-    # min = as.character(min(x, na.rm = T)),
-    # mean = as.character(mean(x, na.rm = T)),
     mean = mean(x, na.rm = T),
     sd = sd(x, na.rm = T),
     largest_1 = x_sorted[1],
@@ -219,14 +178,15 @@ dic_value_extract_one_var <- function(x, var_name) {
     smallest_1 = rev(x_sorted)[1],
     smallest_2 = rev(x_sorted)[2],
     smallest_3 = rev(x_sorted)[3],
-    largest_300 = x_sorted[300],
     top1_value = ifelse(length(frq) == 0, NA, names(frq[1])),
     top1_freq = ifelse(length(frq) == 0, NA, frq[1]),
     top2_value = ifelse(length(frq) == 0, NA, names(frq[2])),
     top2_freq = ifelse(length(frq) == 0, NA, frq[2]),
     top3_value = ifelse(length(frq) == 0, NA, names(frq[3])),
     top3_freq = ifelse(length(frq) == 0, NA, frq[3]),
-  ) %>% mutate(across(everything(), as.character))
+    num_NA = sum(is.na(x))
+  ) %>%
+    mutate(across(everything(), as.character))
 }
 
 
@@ -243,26 +203,33 @@ dic_value_extract_one_var <- function(x, var_name) {
 #' dic_value_extract_one_var_safetly(d$mpg, "mpg")$result
 
 dic_value_extract_one_var_safely <- safely(
-    dic_value_extract_one_var,
-    otherwise =   data.frame(
+  dic_value_extract_one_var,
+  otherwise =
+    tibble(
       var_name = NA,
       label = NA,
       value_distinct = NA,
-      max = NA,
-      min = NA,
       mean = NA,
+      sd = NA,
+      largest_1 = NA,
+      largest_2 = NA,
+      largest_3 = NA,
+      smallest_1 = NA,
+      smallest_2 = NA,
+      smallest_3 = NA,
       top1_value = NA,
       top1_freq = NA,
       top2_value = NA,
       top2_freq = NA,
       top3_value = NA,
-      top3_freq = NA
+      top3_freq = NA,
+      num_NA = NA
     )
-  )
+)
 
 
 #' # the safe version of read_sas
 
-safe_read_sas <- purrr::safely(haven::read_sas, , otherwise = NULL)
+safe_read_sas <- purrr::safely(haven::read_sas, otherwise = NULL)
 
 
