@@ -173,8 +173,8 @@ dic_value_extract_one_var <- function(x, var_name) {
     # Use the quiet version of mean and sd to avoid
     # the warning "argument is not numeric or logical: returning NA"
     # which could accumulate to a large amount
-    mean = quietly(mean)(x, na.rm = T)$result,
-    sd = quietly(sd)(x, na.rm = T)$result,
+    mean = purrr::quietly(mean)(x, na.rm = T)$result,
+    sd = purrr::quietly(sd)(x, na.rm = T)$result,
     largest_1 = x_sorted[1],
     largest_2 = x_sorted[2],
     largest_3 = x_sorted[3],
@@ -205,7 +205,7 @@ dic_value_extract_one_var <- function(x, var_name) {
 #' dic_value_extract_one_var_safetly(d$mpg, "mpg")
 #' dic_value_extract_one_var_safetly(d$mpg, "mpg")$result
 
-dic_value_extract_one_var_safely <- safely(
+dic_value_extract_one_var_safely <- purrr::safely(
   dic_value_extract_one_var,
   otherwise =
     tibble(
