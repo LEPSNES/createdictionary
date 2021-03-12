@@ -160,7 +160,7 @@ dic_value_extract_one_dataset <- function(.data) {
 dic_value_extract_one_var <- function(x, var_name) {
   # sort decreasingly by frequency
   frq <- sort(table(x), decreasing = T)
-  x_sorted <- sort(x, decreasing = TRUE)
+  x_sorted <- sort(unique(x), decreasing = TRUE)
   # make the tibble, one row
   tibble(
     var_name,
@@ -170,8 +170,11 @@ dic_value_extract_one_var <- function(x, var_name) {
       sjlabelled::get_label(x)
     ),
     value_distinct = dplyr::n_distinct(x),
-    mean = mean(x, na.rm = T),
-    sd = sd(x, na.rm = T),
+    # Use the quiet version of mean and sd to avoid
+    # the warning "argument is not numeric or logical: returning NA"
+    # which could accumulate to a large amount
+    mean = quietly(mean)(x, na.rm = T)$result,
+    sd = quietly(sd)(x, na.rm = T)$result,
     largest_1 = x_sorted[1],
     largest_2 = x_sorted[2],
     largest_3 = x_sorted[3],
