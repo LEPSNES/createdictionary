@@ -12,6 +12,8 @@ Encoding: UTF-8
 LazyData: true
 Depends:
     R (>= 2.10),
+    magrittr,
+    tidyverse
 RoxygenNote: 7.1.1
 Imports:
     fs,
@@ -21,4 +23,3 @@ Imports:
     purrr
 URL: https://github.com/LEPSNES/createdictionary/
 BugReports: https://github.com/LEPSNES/createdictionary/issues
-

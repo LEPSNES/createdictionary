@@ -38,6 +38,5 @@ dse[1] \%>\%
   imap_dfr( ~ dic_value_extract_one_var(.x, .y))
 
 
-
 }
 \keyword{internal}

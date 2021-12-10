@@ -28,7 +28,7 @@ This package of createdictionary was developed at the Neuroepidemiology Section 
 
 ## Installation
 
-You can install the released version of createdictionary from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of createdictionary from [CRAN](https://CRAN.R-project.org) with (This installation option is currently unavailable yet):
 
 ``` r
 install.packages("createdictionary")
@@ -96,8 +96,14 @@ Please check the help document for each function to see how to use them.
 ?dic_value_extract_one_var
 
 ```
+## Output
 
-future direction.
+This package generates two comma-separated value (CSV) file, one of which provides variable-level information, the other provides dataset, i.e. file, level information.
+
+Here are the column name and their descriptions in 
+
+
+## Future direction.
 
 1. other dataset types except sas7bdat
    * SPSS
